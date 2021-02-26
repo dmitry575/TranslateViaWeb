@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.IO;
+using System.Threading;
 using log4net;
 using TranslateViaWeb.Common;
 using TranslateViaWeb.Configs;
@@ -22,6 +23,12 @@ namespace TranslateViaWeb.Translates
 
         public void Work()
         {
+            if (!Directory.Exists(_config.DirSrc))
+            {
+                _logger.Info($"created path: {_config.DirSrc}");
+                Directory.CreateDirectory(_config.DirSrc);
+            }
+
             var files = new Files(_config.DirSrc).GetList();
 
             if (files == null || files.Count <= 0)
@@ -29,6 +36,7 @@ namespace TranslateViaWeb.Translates
                 _logger.Warn($"no files to path: {_config.DirSrc}");
                 return;
             }
+
             new TranslateBackgroundHandler(_config, files, _cancellationToken).Work();
         }
     }

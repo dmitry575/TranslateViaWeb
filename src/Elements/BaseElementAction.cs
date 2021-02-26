@@ -45,5 +45,15 @@ namespace TranslateViaWeb.Elements
             var element = Driver.FindElement(By.XPath(Xpath));
             ((IJavaScriptExecutor)Driver).ExecuteScript(script, element);
         }
+
+        public virtual string GetInnerText()
+        {
+            var element = Driver.FindElement(By.XPath(Xpath));
+            if (element != null)
+            {
+                return element.Text.Trim();
+            }
+            return string.Empty;
+        }
     }
 }

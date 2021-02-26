@@ -60,6 +60,8 @@ namespace TranslateViaWeb.Translates
             return "https://www.m-translate.by/#";
         }
 
+        protected override int GetId() => 1;
+
         protected override bool IsNeedRecreateDriver() => false;
     }
 }

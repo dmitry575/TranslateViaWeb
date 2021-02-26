@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using log4net;
 using TranslateViaWeb.Configs;
 
@@ -16,7 +15,12 @@ namespace TranslateViaWeb.Translates
         private readonly Configuration _config;
         private readonly List<string> _files;
         private readonly ILog _logger = LogManager.GetLogger(typeof(TranslateBackgroundHandler));
-        private const int MaxTasks = 1;
+        private readonly Type[] _translateFiles =
+        {
+            typeof(DeeplTranslateFile),
+            typeof(MTranslateByTranslateFile),
+            typeof(TranslateRuFile)
+        };
         private readonly CancellationToken _cancellationToken;
 
         public TranslateBackgroundHandler(Configuration config, List<string> files, CancellationToken cancellationToken)
@@ -34,47 +38,52 @@ namespace TranslateViaWeb.Translates
             try
             {
                 _logger.Info($"start translate {_files.Count} files");
-                //                TranslateMtranslateByFile(_files[0]);
 
-                var d = _files.Count * 2 / 3;
-                //var tasks = new List<Task>(2);
-                //var cur = 0;
-                //foreach (var file in _files)
-                //{
-                //    if (tasks.Count > 1)
-                //    {
-                //        var idx = Task.WaitAny(tasks.ToArray(), _cancellationToken);
-                //        tasks.RemoveAt(idx);
-                //        cur = idx;
-                //    }
+                new TranslateRuFile(_files[0], _config).Translate();
 
-                //    switch (cur)
-                //    {
-                //        case 0:
-                //            tasks[cur] = Task.Run(TranslateDeeplFile(file)));
-                //    }
-                //}
-                var tasks = new List<Task>
+                var tasks = new List<Task>(_translateFiles.Length);
+                var cur = 0;
+
+                foreach (var file in _files)
                 {
-                    Task.Run(() =>
-                        Parallel.For(0, d,
-                            new ParallelOptions
-                            {
-                                CancellationToken = _cancellationToken, MaxDegreeOfParallelism = MaxTasks
-                            }, (i) => TranslateDeeplFile(_files[i])), _cancellationToken),
+                    if (tasks.Count >= _translateFiles.Length)
+                    {
+                        var idx = Task.WaitAny(tasks.ToArray(), _cancellationToken);
+                        tasks.RemoveAt(idx);
+                        cur = idx;
+                    }
 
-                    Task.Run(() =>
-                        Parallel.For(d, _files.Count-1,
-                            new ParallelOptions
-                            {
-                                CancellationToken = _cancellationToken, MaxDegreeOfParallelism = MaxTasks
-                            }, (i) => TranslateMtranslateByFile(_files[i])), _cancellationToken)
-                };
+                    var translate = TranslateFileFactory.Create(_translateFiles[cur], file, _config);
 
+                    tasks[cur] = Task.Run(() =>
+                    {
+                        using (LogicalThreadContext.Stacks["NDC"].Push($"Filename: {file}"))
+                        {
+                            translate.Translate();
+                        }
 
+                    }, _cancellationToken);
+                }
 
+                Task.WaitAll(tasks.ToArray(), _cancellationToken);
 
-                Task.WaitAll(tasks.ToArray());
+                //var tasks = new List<Task>
+                //{
+                //    Task.Run(() =>
+                //        Parallel.For(0, d,
+                //            new ParallelOptions
+                //            {
+                //                CancellationToken = _cancellationToken, MaxDegreeOfParallelism = MaxTasks
+                //            }, (i) => TranslateDeeplFile(_files[i])), _cancellationToken),
+
+                //    Task.Run(() =>
+                //        Parallel.For(d, _files.Count-1,
+                //            new ParallelOptions
+                //            {
+                //                CancellationToken = _cancellationToken, MaxDegreeOfParallelism = MaxTasks
+                //            }, (i) => TranslateMtranslateByFile(_files[i])), _cancellationToken)
+                //};
+
             }
             catch (Exception e)
             {

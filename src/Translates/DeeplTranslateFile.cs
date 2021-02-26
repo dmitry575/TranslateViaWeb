@@ -106,6 +106,9 @@ namespace TranslateViaWeb.Translates
             return $"https://www.deepl.com/{Config.FromLang}/translator";
         }
 
+        protected override int GetId() => 0;
+        
+
         protected override bool IsNeedRecreateDriver() => true;
     }
 }

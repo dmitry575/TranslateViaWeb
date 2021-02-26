@@ -10,7 +10,7 @@ using TranslateViaWeb.Configs;
 
 namespace TranslateViaWeb.Translates
 {
-    public abstract class BaseTranslateFile : IDisposable
+    public abstract class BaseTranslateFile : ITranslateFile, IDisposable
     {
         /// <summary>
         /// Minimal seconds for pause between action on form
@@ -86,8 +86,6 @@ namespace TranslateViaWeb.Translates
 
             // create browser
             CreateDriver();
-
-
 
             try
             {
@@ -267,6 +265,11 @@ namespace TranslateViaWeb.Translates
         protected abstract string GetUrlTranslate();
 
         /// <summary>
+        /// Get Id of translate
+        /// </summary>
+        protected abstract int GetId();
+
+        /// <summary>
         /// Creating webrowser
         /// </summary>
         protected virtual void CreateDriver()
@@ -274,7 +277,7 @@ namespace TranslateViaWeb.Translates
             var options = GetOptions(Config.DirOutput);
             // options.Profile = profile;
             Driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(_maxSecondsWaiting));
-            
+
             Driver.Manage().Window.Maximize();
             string url = GetUrlTranslate();
 
@@ -338,7 +341,7 @@ namespace TranslateViaWeb.Translates
                     //Set the http proxy value, host and port.
                     HttpProxy = Config.Proxy
                 };
-                
+
                 //Set the proxy to the Chrome options
                 options.Proxy = proxy;
             }
