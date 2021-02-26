@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TranslateViaWeb": {
+      "commandName": "Project",
+      "commandLineArgs": "/from es /to ru /dir G:\\Projects\\HtmlConvert\\data-es-stackoverflow /output G:\\Projects\\TranslateDoc\\translate-es-stackoverflow"
+    }
+  }
+}
