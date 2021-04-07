@@ -12,7 +12,7 @@ namespace TranslateViaWeb.Translates
     public class TranslateJobs
     {
         private readonly Configuration _config;
-        private static ILog _logger = LogManager.GetLogger(typeof(TranslateJobs));
+        private readonly ILog _logger = LogManager.GetLogger(typeof(TranslateJobs));
         private readonly CancellationToken _cancellationToken;
 
         public TranslateJobs(Configuration config, CancellationToken cancellationToken)

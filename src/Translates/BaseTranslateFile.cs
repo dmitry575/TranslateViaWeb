@@ -82,6 +82,12 @@ namespace TranslateViaWeb.Translates
                 Logger.Info($"translated file already exists: {_filename}");
                 return true;
             }
+
+            if (!LanguagesMapping())
+            {
+                return false;
+            }
+
             Logger.Info($"starting translate file: {_filename}");
 
             // create browser
@@ -164,6 +170,7 @@ namespace TranslateViaWeb.Translates
 
         protected abstract (string, bool) Translating(string text);
 
+        protected abstract bool LanguagesMapping();
         protected abstract bool IsNeedRecreateDriver();
 
         /// <summary>
@@ -305,7 +312,6 @@ namespace TranslateViaWeb.Translates
         /// <summary>
         /// Get filename for saving transating text
         /// </summary>
-        /// <returns></returns>
         private string GetFileNameSave()
         {
             var fInfo = new FileInfo(_filename);
@@ -330,8 +336,11 @@ namespace TranslateViaWeb.Translates
         {
             var options = new ChromeOptions();
             options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36");
+#if !DEBUG
+            options.AddArgument("--headless");
+#endif
             options.AddUserProfilePreference("download.default_directory", Path.GetFullPath(dirOutput));
-            options.AddUserProfilePreference("intl.accept_languages", "nl");
+            options.AddUserProfilePreference("intl.accept_languages", "en");
             options.AddUserProfilePreference("disable-popup-blocking", "true");
             if (!string.IsNullOrEmpty(Config.Proxy))
             {

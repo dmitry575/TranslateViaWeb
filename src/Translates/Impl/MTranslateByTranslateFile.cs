@@ -1,13 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using TranslateViaWeb.Configs;
 using TranslateViaWeb.Elements;
 
-namespace TranslateViaWeb.Translates
+namespace TranslateViaWeb.Translates.Impl
 {
     public class MTranslateByTranslateFile : BaseTranslateFile
     {
-        private Random _random = new Random(56789);
+        private readonly Random _random = new Random(56789);
+
+        private List<string> _webSites = new List<string>
+        {
+            "https://www.m-translate.by/#",
+            "https://www.m-translate.com.ua/#",
+            //"https://www.m-translate.com/#",
+            "https://www.m-translate.ru/#"
+
+        };
+
         public MTranslateByTranslateFile(string filename, Configuration config) : base(filename, config)
         {
         }
@@ -27,10 +38,10 @@ namespace TranslateViaWeb.Translates
 
             Logger.Info($"set lang to: {Config.ToLang}");
             new ButtonWaiteElement(Driver, "//div[@id='trn_from_cnt']//div[@id='to_btn']/span").Action();
-            
+
             Thread.Sleep(_random.Next(1, 2) * 1000);
             new ButtonWaiteElement(Driver, "//div[@id='jbox_2']//span[@class='select2-selection__arrow']").Action();
- 
+
             Thread.Sleep(_random.Next(1, 2) * 1000);
             new ButtonWaiteElement(Driver, "//ul[@id='select2-translate_to-results']//li[contains(@id,'-" + Config.ToLang.ToLower() + "')]").Action();
 
@@ -50,6 +61,8 @@ namespace TranslateViaWeb.Translates
             return (result, true);
         }
 
+        protected override bool LanguagesMapping() => true;
+
         protected override int GetMaxSymbolsText()
         {
             return 4999;
@@ -57,7 +70,7 @@ namespace TranslateViaWeb.Translates
 
         protected override string GetUrlTranslate()
         {
-            return "https://www.m-translate.by/#";
+            return _webSites[_random.Next(0, _webSites.Count - 1)];
         }
 
         protected override int GetId() => 1;

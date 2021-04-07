@@ -4,7 +4,7 @@ using System.Threading;
 using TranslateViaWeb.Configs;
 using TranslateViaWeb.Elements;
 
-namespace TranslateViaWeb.Translates
+namespace TranslateViaWeb.Translates.Impl
 {
     /// <summary>
     /// Class for translate one file
@@ -35,17 +35,6 @@ namespace TranslateViaWeb.Translates
 
         protected override (string, bool) Translating(string text)
         {
-            if (!_mappingLanguages.ContainsKey(Config.FromLang.ToLower()))
-            {
-                Logger.Error($"translate deepl do not support language: {Config.FromLang}");
-                return (string.Empty, false);
-            }
-            if (!_mappingLanguages.ContainsKey(Config.ToLang.ToLower()))
-            {
-                Logger.Error($"translate deepl do not support language: {Config.ToLang}");
-                return (string.Empty, false);
-            }
-
             // select language
 
             Logger.Info($"set lang from: {Config.FromLang}");
@@ -94,6 +83,22 @@ namespace TranslateViaWeb.Translates
             }
 
             return (result, true);
+        }
+
+        protected override bool LanguagesMapping()
+        {
+            if (!_mappingLanguages.ContainsKey(Config.FromLang.ToLower()))
+            {
+                Logger.Error($"translate deepl do not support language: {Config.FromLang}");
+                return  false;
+            }
+            if (!_mappingLanguages.ContainsKey(Config.ToLang.ToLower()))
+            {
+                Logger.Error($"translate deepl do not support language: {Config.ToLang}");
+                return false;
+            }
+
+            return true;
         }
 
         protected override int GetMaxSymbolsText()

@@ -4,11 +4,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 using TranslateViaWeb.Configs;
+using TranslateViaWeb.Translates.Impl;
 
 namespace TranslateViaWeb.Translates
 {
     /// <summary>
     /// Handler of queue with files
+    /// 
+    //https://www.bing.com/translator
+    //https://www.reverso.net/text_translation.aspx?lang=RU
+    //https://www.translate.ru/
+    //https://www.webtran.ru/
+    //https://www.online-translator.com/
+    //https://translation2.paralink.com/
+    //https://www.translator.eu/
+    //https://www.translate.com/
+    //https://www.lexicool.com/translate.asp
+    //https://www.systransoft.com/lp/free-online-translation/
+
     /// </summary>
     public class TranslateBackgroundHandler
     {
@@ -39,33 +52,50 @@ namespace TranslateViaWeb.Translates
             {
                 _logger.Info($"start translate {_files.Count} files");
 
-                new TranslateRuFile(_files[0], _config).Translate();
+                var dd = new SystranNetFile(_files[0], _config);
+                dd.Translate();
 
-                var tasks = new List<Task>(_translateFiles.Length);
-                var cur = 0;
-
+                Task[] tasks = new Task[_translateFiles.Length];
+                int countRun = 0;
+                var idx = -1;
                 foreach (var file in _files)
                 {
-                    if (tasks.Count >= _translateFiles.Length)
+                    if (countRun >= _translateFiles.Length)
                     {
-                        var idx = Task.WaitAny(tasks.ToArray(), _cancellationToken);
-                        tasks.RemoveAt(idx);
-                        cur = idx;
+                        idx = Task.WaitAny(tasks, _cancellationToken);
+                        tasks[idx] = null;
+                        countRun--;
+                    }
+                    else
+                    {
+                        idx++;
                     }
 
-                    var translate = TranslateFileFactory.Create(_translateFiles[cur], file, _config);
+                    var translate = TranslateFileFactory.Create(GetEasyType(idx), file, _config);
 
-                    tasks[cur] = Task.Run(() =>
+                    if (translate == null) { continue; }
+
+                    _logger.Info($"translate system: {translate.GetType().Name} starting...");
+
+                    tasks[idx] = Task.Run(() =>
                     {
-                        using (LogicalThreadContext.Stacks["NDC"].Push($"Filename: {file}"))
+                        using (LogicalThreadContext.Stacks["NDC"].Push($"Filename: {file}, {translate.GetType().Name}"))
                         {
-                            translate.Translate();
+                            try
+                            {
+                                translate.Translate();
+                            }
+                            finally { translate.Dispose(); }
+
                         }
 
                     }, _cancellationToken);
+
+                    countRun++;
+
                 }
 
-                Task.WaitAll(tasks.ToArray(), _cancellationToken);
+                Task.WaitAll(tasks, _cancellationToken);
 
                 //var tasks = new List<Task>
                 //{
@@ -91,31 +121,9 @@ namespace TranslateViaWeb.Translates
             }
         }
 
-        /// <summary>
-        /// Translate through deeple.com
-        /// </summary>
-        /// <param name="filename">File to translate</param>
-
-        private void TranslateDeeplFile(string filename)
+        private Type GetEasyType(int index)
         {
-            using var t = new DeeplTranslateFile(filename, _config);
-            using (LogicalThreadContext.Stacks["NDC"].Push($"Filename: {filename}"))
-            {
-                t.Translate();
-            }
-        }
-
-        /// <summary>
-        /// Translate through M-translate.by
-        /// </summary>
-        /// <param name="filename">File to translate</param>
-        private void TranslateMtranslateByFile(string filename)
-        {
-            using var t = new MTranslateByTranslateFile(filename, _config);
-            using (LogicalThreadContext.Stacks["NDC"].Push($"Filename: {filename}"))
-            {
-                t.Translate();
-            }
+            return _translateFiles[index];
         }
     }
 }

@@ -3,13 +3,21 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.2.0</AssemblyVersion>
+    <FileVersion>1.0.2.0</FileVersion>
+    <Authors>Tarakanov Dmitry</Authors>
+    <Product>Translater text files</Product>
+    <PackageProjectUrl>https://github.com/dmitry575/TranslateViaWeb</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/dmitry575/TranslateViaWeb</RepositoryUrl>
+    <Description>It is example how to use Selenium for translate list of files. For transalting use the web service different websites, like: deepl.com, translate.ru and so on</Description>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="Selenium.Support" Version="3.141.0" />
     <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="88.0.4324.9600" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="89.0.4389.2300" />
   </ItemGroup>
 
   <ItemGroup>

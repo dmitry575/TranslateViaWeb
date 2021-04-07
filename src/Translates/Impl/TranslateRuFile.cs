@@ -4,12 +4,25 @@ using System.Threading;
 using TranslateViaWeb.Configs;
 using TranslateViaWeb.Elements;
 
-namespace TranslateViaWeb.Translates
+namespace TranslateViaWeb.Translates.Impl
 {
     public class TranslateRuFile : BaseTranslateFile
     {
         private readonly Random _random = new Random(1231);
-        private readonly Dictionary<string, string> _mappingLanguages = new Dictionary<string, string>
+        private readonly Dictionary<string, string> _mappingLanguagesTo = new Dictionary<string, string>
+        {
+            {"fr", "Французский"},
+            {"en", "Английский"},
+            {"sp", "Испанский"},
+            {"es", "Испанский"},
+            {"it", "Итальянский"},
+            {"ru", "Русский"},
+            {"de", "Немецкий"},
+            {"zh", "Китайский"},
+            {"ja", "Японский"},
+        };
+
+        private readonly Dictionary<string, string> _mappingLanguagesFrom = new Dictionary<string, string>
         {
             {"fr", "20"},
             {"en", "2"},
@@ -29,17 +42,7 @@ namespace TranslateViaWeb.Translates
         }
         protected override (string, bool) Translating(string text)
         {
-            if (!_mappingLanguages.ContainsKey(Config.FromLang.ToLower()))
-            {
-                Logger.Error($"translate Translate.Ru do not support language: {Config.FromLang}");
-                return (string.Empty, false);
-            }
-            if (!_mappingLanguages.ContainsKey(Config.ToLang.ToLower()))
-            {
-                Logger.Error($"translate Translate.Ru do not support language: {Config.ToLang}");
-                return (string.Empty, false);
-            }
-
+            
             Logger.Info($"set category: Computer");
             new ButtonWaiteElement(Driver, "//*[@data-id=\"selDivTmpl\"]").Action();
             Thread.Sleep(_random.Next(2, 3) * 1000);
@@ -54,8 +57,9 @@ namespace TranslateViaWeb.Translates
                 new ButtonWaiteElement(Driver, "//*[@data-id=\"sLang\"]").Action();
 
                 Thread.Sleep(_random.Next(2, 3) * 1000);
-                new ButtonWaiteElement(Driver, "//div[@class=\"dropdown-menu open\"]//li[@data-original-index=\"" + _mappingLanguages[Config.FromLang.ToLower()] + "\"]//a").Action();
-                //buttonToLang.JavascriptExe("arguments[0].click();");
+
+                new ButtonWaiteElement(Driver, "//div[@id='sourceTextBlock']//div[@class=\"dropdown-menu open\"][@role='combobox']//li[@data-original-index=\"" + _mappingLanguagesFrom[Config.FromLang.ToLower()] + "\"]").Action();
+                
             }
             catch (Exception e)
             {
@@ -67,11 +71,12 @@ namespace TranslateViaWeb.Translates
             try
             {
                 Logger.Info($"set lang to: {Config.ToLang}");
-                new ButtonWaiteElement(Driver, "//button[@id=\"rLang\"]").Action();
+                new ButtonWaiteElement(Driver, "//button[@data-id=\"rLang\"]").Action();
                 
                 Thread.Sleep(_random.Next(2, 3) * 1000);
 
-                new ButtonWaiteElement(Driver, "//div[@class=\"dropdown-menu open\"]//li[@data-original-index=\"" + _mappingLanguages[Config.ToLang.ToLower()] + "\"]//a").Action();
+                //new ButtonWaiteElement(Driver, "//div[contains(@class,'resultText')]//div[@class=\"dropdown-menu open\"]//li[@data-original-index=\"" + _mappingLanguagesTo[Config.ToLang.ToLower()] + "\"]").Action();
+                new ButtonWaiteElement(Driver, "//div[contains(@class,'resultText')]//div[@class=\"dropdown-menu open\"]//li[contains(text(), '" + _mappingLanguagesTo[Config.ToLang.ToLower()] + "')]").Action();
                 //buttonToLang.JavascriptExe("arguments[0].click();");
             }
             catch (Exception e)
@@ -84,7 +89,7 @@ namespace TranslateViaWeb.Translates
             Thread.Sleep(_random.Next(20, 25) * 1000);
 
             var resultElement = new InputElement(Driver, "//textarea[@id='editResult_test']", string.Empty);
-            string result = resultElement.GetInnerText();
+            string result = resultElement.GetAttribute("value");
 
             if (string.IsNullOrEmpty(result))
             {
@@ -93,6 +98,22 @@ namespace TranslateViaWeb.Translates
             }
 
             return (result, true);
+        }
+
+        protected override bool LanguagesMapping()
+        {
+            if (!_mappingLanguagesFrom.ContainsKey(Config.FromLang.ToLower()))
+            {
+                Logger.Error($"translate Translate.Ru do not support language: {Config.FromLang}");
+                return false;
+            }
+            if (!_mappingLanguagesTo.ContainsKey(Config.ToLang.ToLower()))
+            {
+                Logger.Error($"translate Translate.Ru do not support language: {Config.ToLang}");
+                return false;
+            }
+
+            return true;
         }
 
         protected override int GetMaxSymbolsText()

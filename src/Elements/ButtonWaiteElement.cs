@@ -23,44 +23,47 @@ namespace TranslateViaWeb.Elements
                 PollingInterval = TimeSpan.FromSeconds(20)
             };
 
-            var button = wait.Until(d => d.FindElement(By.XPath(Xpath)));
+            var buttons = wait.Until(d => d.FindElements(By.XPath(Xpath)));
             Logger.Info($"try find xpath: {Xpath}, {nameof(ButtonWaiteElement)}");
 
 
-            if (button == null)
+            if (buttons == null)
             {
-                button = Driver.FindElement(By.XPath(Xpath));
-                if (button == null)
+                buttons = Driver.FindElements(By.XPath(Xpath));
+                if (buttons == null)
                 {
                     Logger.Warn($"Not found element by xpath: {Xpath}, {nameof(ButtonWaiteElement)}");
                     return;
                 }
             }
 
-            var display = button.GetCssValue("display");
-            Logger.Info($"button display: {display}");
-
-            if ((button.Displayed && button.Enabled) || _tryClick > MaxClick)
+            foreach (var button in buttons)
             {
-                // try to scroll to button element
-                try
-                {
-                    Driver.ScrollToCenter(button);
-                }
-                catch (Exception e)
-                {
-                    Logger.Error($"failed scroll to button {Xpath}. {e}");
-                }
+                var display = button.GetCssValue("display");
+                Logger.Info($"button display: {display}");
 
-                Thread.Sleep(5);
+                if ((button.Displayed && button.Enabled) || _tryClick > MaxClick)
+                {
+                    // try to scroll to button element
+                    try
+                    {
+                        Driver.ScrollToCenter(button);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error($"failed scroll to button {Xpath}. {e}");
+                    }
 
-                button.Click();
-            }
-            else
-            {
-                _tryClick++;
-                Logger.Info($"try to click to {Xpath}, {_tryClick}");
-                Action();
+                    Thread.Sleep(5);
+
+                    button.Click();
+                }
+                //else
+                //{
+                //    _tryClick++;
+                //    Logger.Info($"try to click to {Xpath}, {_tryClick}");
+                //    Action();
+                //}
             }
         }
 
