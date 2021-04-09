@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
+using OpenQA.Selenium;
 using TranslateViaWeb.Configs;
 using TranslateViaWeb.Elements;
 
@@ -56,11 +56,17 @@ namespace TranslateViaWeb.Translates.Impl
             try
             {
                 Logger.Info($"set lang from: {Config.FromLang}");
-                new ButtonWaiteElement(Driver, "//div[contains(@class,'sourceLanguageDiv')//div[contains(@class,'Select-arrow-zone')]").Action();
 
-                Thread.Sleep(_random.Next(2, 3) * 1000);
+                
+                new ButtonWaiteElement(Driver, "//div[@class='sourceLanguageDiv']/span[contains(@class,'Select-arrow-zone')]").Action();
+               // Thread.Sleep(_random.Next(2, 3) * 1000);
+               var el= Driver.FindElement(By.XPath("//div[@class='sourceLanguageDiv']"));
+               foreach (var element in el.FindElements(By.XPath("./*[@class='Select-menu-outer']")))
+               {
+                   Logger.Info($"{element.TagName} {element.GetAttribute("class")} {element.Text}");
+               }
 
-                new ButtonWaiteElement(Driver, "//div[contains(@class,'targetLanguageDiv')]//div[contains(@class,'Select-arrow-zone')]").Action();
+                new ButtonWaiteElement(Driver, "//div[contains(@class,'targetLanguageDiv')]//div[contains(@class,'has-value')]").Action();
 
             }
             catch (Exception e)

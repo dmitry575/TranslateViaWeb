@@ -52,7 +52,7 @@ namespace TranslateViaWeb.Translates
             {
                 _logger.Info($"start translate {_files.Count} files");
 
-                var dd = new SystranNetFile(_files[0], _config);
+                var dd = new BingFile(_files[1], _config);
                 dd.Translate();
 
                 Task[] tasks = new Task[_translateFiles.Length];
