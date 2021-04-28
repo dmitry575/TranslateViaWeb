@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using OpenQA.Selenium;
 using TranslateViaWeb.Configs;
 using TranslateViaWeb.Elements;
 
@@ -54,7 +53,7 @@ namespace TranslateViaWeb.Translates.Impl
             try
             {
                 Thread.Sleep(_random.Next(2, 3) * 1000);
-              new ButtonWaiteElement(Driver, "//*[@id=\"tta_srcsl\"]//option[@value='"+Config.FromLang.ToLower()+"']").Action();
+                new ButtonWaiteElement(Driver, "//*[@id=\"tta_srcsl\"]//option[@value='" + Config.FromLang.ToLower() + "']").Action();
             }
             catch (Exception e)
             {
@@ -67,8 +66,8 @@ namespace TranslateViaWeb.Translates.Impl
             try
             {
                 Thread.Sleep(_random.Next(2, 3) * 1000);
-                new ButtonWaiteElement(Driver, "//*[@id=\"tta_tgtsl\"]//option[@value='" + Config.ToLang.ToLower()+"']").Action();
-                
+                new ButtonWaiteElement(Driver, "//*[@id=\"tta_tgtsl\"]//option[@value='" + Config.ToLang.ToLower() + "']").Action();
+
             }
             catch (Exception e)
             {
@@ -77,12 +76,16 @@ namespace TranslateViaWeb.Translates.Impl
 
             new InputElement(Driver, "//textarea[@id='tta_input_ta']", text).Action();
 
-            Thread.Sleep(_random.Next(20, 25) * 1000);
+            new ButtonWaiteElement(Driver, "//textarea[@id='tta_input_ta']").Action();
+
+            Thread.Sleep(_random.Next(30, 35) * 1000);
+
+            new ButtonWaiteElement(Driver, "//textarea[@id='tta_input_ta']").Action();
 
             var resultElement = new InputElement(Driver, "//textarea[@id='tta_output_ta']", string.Empty);
             string result = resultElement.GetAttribute("value");
 
-            if (string.IsNullOrEmpty(result))
+            if (string.IsNullOrEmpty(result) || result.Length <= 4 || result == text)
             {
                 Logger.Warn("not found result of translating");
                 return (string.Empty, false);
@@ -109,7 +112,7 @@ namespace TranslateViaWeb.Translates.Impl
 
         protected override int GetMaxSymbolsText()
         {
-            return 1999;
+            return 999;
         }
 
         protected override string GetUrlTranslate()

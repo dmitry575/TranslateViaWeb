@@ -32,7 +32,8 @@ namespace TranslateViaWeb.Translates
         {
             typeof(DeeplTranslateFile),
             typeof(MTranslateByTranslateFile),
-            typeof(TranslateRuFile)
+            typeof(TranslateRuFile),
+            typeof(BingFile),
         };
         private readonly CancellationToken _cancellationToken;
 
@@ -52,10 +53,8 @@ namespace TranslateViaWeb.Translates
             {
                 _logger.Info($"start translate {_files.Count} files");
 
-                var dd = new BingFile(_files[1], _config);
-                dd.Translate();
-
                 Task[] tasks = new Task[_translateFiles.Length];
+                Dictionary<int, int> statistics = InitStatistics();
                 int countRun = 0;
                 var idx = -1;
                 foreach (var file in _files)
@@ -65,6 +64,7 @@ namespace TranslateViaWeb.Translates
                         idx = Task.WaitAny(tasks, _cancellationToken);
                         tasks[idx] = null;
                         countRun--;
+                        statistics[idx]++;
                     }
                     else
                     {
@@ -97,6 +97,8 @@ namespace TranslateViaWeb.Translates
 
                 Task.WaitAll(tasks, _cancellationToken);
 
+                PrintStatistics(statistics);
+
                 //var tasks = new List<Task>
                 //{
                 //    Task.Run(() =>
@@ -119,6 +121,26 @@ namespace TranslateViaWeb.Translates
             {
                 _logger.Error($"translate files parallel failed: {e}");
             }
+        }
+
+        private void PrintStatistics(Dictionary<int, int> statistics)
+        {
+            _logger.Info($"translate statistics:");
+            foreach (var statistic in statistics)
+            {
+                _logger.Info($"{GetEasyType(statistic.Key).Name}\t{statistic.Value}");
+            }
+        }
+
+        private Dictionary<int, int> InitStatistics()
+        {
+            var statistics = new Dictionary<int, int>();
+            for (var i = 0; i < _translateFiles.Length; i++)
+            {
+                statistics[i] = 0;
+            }
+
+            return statistics;
         }
 
         private Type GetEasyType(int index)
