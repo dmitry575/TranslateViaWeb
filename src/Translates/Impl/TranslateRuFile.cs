@@ -75,9 +75,7 @@ namespace TranslateViaWeb.Translates.Impl
                 
                 Thread.Sleep(_random.Next(2, 3) * 1000);
 
-                //new ButtonWaiteElement(Driver, "//div[contains(@class,'resultText')]//div[@class=\"dropdown-menu open\"]//li[@data-original-index=\"" + _mappingLanguagesTo[Config.ToLang.ToLower()] + "\"]").Action();
                 new ButtonWaiteElement(Driver, "//div[contains(@class,'resultText')]//div[@class=\"dropdown-menu open\"]//li[contains(text(), '" + _mappingLanguagesTo[Config.ToLang.ToLower()] + "')]").Action();
-                //buttonToLang.JavascriptExe("arguments[0].click();");
             }
             catch (Exception e)
             {
@@ -121,7 +119,7 @@ namespace TranslateViaWeb.Translates.Impl
             return 2999;
         }
 
-        protected override string GetUrlTranslate()
+        protected override string GetUrlTranslate(string text = "")
         {
             return $"https://www.translate.ru/";
         }

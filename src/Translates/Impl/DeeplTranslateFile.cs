@@ -106,7 +106,7 @@ namespace TranslateViaWeb.Translates.Impl
             return 4999;
         }
 
-        protected override string GetUrlTranslate()
+        protected override string GetUrlTranslate(string text = "")
         {
             return $"https://www.deepl.com/{Config.FromLang}/translator";
         }

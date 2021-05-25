@@ -8,22 +8,36 @@ namespace TranslateViaWeb.Translates
     {
         public static BaseTranslateFile Create(Type type, string filename, Configuration config)
         {
-            switch (type)
+            var constructorInfo = type.GetConstructor(new[] { typeof(string), typeof(Configuration) });
+            if (constructorInfo != null)
             {
-                case { } intType when intType == typeof(DeeplTranslateFile):
-                    return new DeeplTranslateFile(filename, config);
-
-                case { } intType when intType == typeof(MTranslateByTranslateFile):
-                    return new MTranslateByTranslateFile(filename, config);
-
-                case { } intType when intType == typeof(TranslateRuFile):
-                    return new TranslateRuFile(filename, config);
-
-                case { } intType when intType == typeof(SystranNetFile):
-                    return new SystranNetFile(filename, config);
-
+                object[] parameters = { filename, config };
+                return (BaseTranslateFile)constructorInfo.Invoke(parameters);
             }
+
             return null;
+            /*   switch (type)
+               {
+                   case { } intType when intType == typeof(DeeplTranslateFile):
+                       return new DeeplTranslateFile(filename, config);
+
+                   case { } intType when intType == typeof(MTranslateByTranslateFile):
+                       return new MTranslateByTranslateFile(filename, config);
+
+                   case { } intType when intType == typeof(TranslateRuFile):
+                       return new TranslateRuFile(filename, config);
+
+                   case { } intType when intType == typeof(SystranNetFile):
+                       return new SystranNetFile(filename, config);
+
+                   case { } intType when intType == typeof(BingFile):
+                       return new BingFile(filename, config);
+
+                   //case { } intType when intType == typeof(TranslatorEuFile):
+                   //    return new TranslatorEuFile(filename, config);
+
+               }
+               return null;*/
         }
     }
 }

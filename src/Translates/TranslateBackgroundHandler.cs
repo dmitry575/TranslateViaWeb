@@ -11,14 +11,12 @@ namespace TranslateViaWeb.Translates
     /// <summary>
     /// Handler of queue with files
     /// 
-    //https://www.bing.com/translator
     //https://www.reverso.net/text_translation.aspx?lang=RU
     //https://www.translate.ru/
     //https://www.webtran.ru/
     //https://www.online-translator.com/
     //https://translation2.paralink.com/
-    //https://www.translator.eu/
-    //https://www.translate.com/
+    //https://www.translate.com/machine-translation
     //https://www.lexicool.com/translate.asp
     //https://www.systransoft.com/lp/free-online-translation/
 
@@ -34,6 +32,7 @@ namespace TranslateViaWeb.Translates
             typeof(MTranslateByTranslateFile),
             typeof(TranslateRuFile),
             typeof(BingFile),
+            typeof(TranslatorEuFile)
         };
         private readonly CancellationToken _cancellationToken;
 
@@ -52,7 +51,10 @@ namespace TranslateViaWeb.Translates
             try
             {
                 _logger.Info($"start translate {_files.Count} files");
-
+                
+                var translate2 = new TranslatorEuFile(_files[0], _config);
+                translate2.Translate();
+                
                 Task[] tasks = new Task[_translateFiles.Length];
                 Dictionary<int, int> statistics = InitStatistics();
                 int countRun = 0;

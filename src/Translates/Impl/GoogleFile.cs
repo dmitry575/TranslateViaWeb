@@ -1,14 +1,17 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Web;
 using TranslateViaWeb.Configs;
 using TranslateViaWeb.Elements;
 
 namespace TranslateViaWeb.Translates.Impl
 {
-    class BingFile : BaseTranslateFile
+    public class GoogleFile : BaseTranslateFile
     {
-        private readonly Random _random = new Random(1231);
+        private readonly Random _random = new Random(1331);
+
         private readonly Dictionary<string, string> _mappingLanguagesTo = new Dictionary<string, string>
         {
             {"fr", "fr"},
@@ -40,7 +43,7 @@ namespace TranslateViaWeb.Translates.Impl
             {"zh", "zh"},
             {"ja", "ja"}
         };
-        public BingFile(string filename, Configuration config) : base(filename, config)
+        public GoogleFile(string filename, Configuration config) : base(filename, config)
         {
         }
 
@@ -48,39 +51,9 @@ namespace TranslateViaWeb.Translates.Impl
         {
             // select language
 
-            Logger.Info($"set lang from: {Config.FromLang}");
-            new ButtonWaiteElement(Driver, "//*[@id=\"tta_srcsl\"]").Action();
-            try
-            {
-                Thread.Sleep(_random.Next(2, 3) * 1000);
-                new ButtonWaiteElement(Driver, "//*[@id=\"tta_srcsl\"]//option[@value='" + Config.FromLang.ToLower() + "']").Action();
-            }
-            catch (Exception e)
-            {
-                Logger.Warn($"error on click button select to language: {e}");
-            }
-
-            Logger.Info($"set lang to: {Config.ToLang}");
-            new ButtonWaiteElement(Driver, "//*[@id=\"tta_tgtsl\"]").Action();
-
-            try
-            {
-                Thread.Sleep(_random.Next(2, 3) * 1000);
-                new ButtonWaiteElement(Driver, "//*[@id=\"tta_tgtsl\"]//option[@value='" + Config.ToLang.ToLower() + "']").Action();
-
-            }
-            catch (Exception e)
-            {
-                Logger.Warn($"error on click button select to language: {e}");
-            }
-
-            new InputElement(Driver, "//textarea[@id='tta_input_ta']", text).Action();
-
-            new ButtonWaiteElement(Driver, "//textarea[@id='tta_input_ta']").Action();
-
             Thread.Sleep(_random.Next(30, 35) * 1000);
 
-            new ButtonWaiteElement(Driver, "//textarea[@id='tta_input_ta']").Action();
+            new ButtonWaiteElement(Driver, "//span[@data-language-to-translate-into='{Config.FromLang.ToLower()}']");
 
             var resultElement = new InputElement(Driver, "//textarea[@id='tta_output_ta']", string.Empty);
             string result = resultElement.GetAttribute("value");
@@ -98,31 +71,26 @@ namespace TranslateViaWeb.Translates.Impl
         {
             if (!_mappingLanguagesFrom.ContainsKey(Config.FromLang.ToLower()))
             {
-                Logger.Error($"translate bing.com do not support language: {Config.FromLang}");
+                Logger.Error($"translate {GetUrlTranslate()} do not support language: {Config.FromLang}");
                 return false;
             }
             if (!_mappingLanguagesTo.ContainsKey(Config.ToLang.ToLower()))
             {
-                Logger.Error($"translate bing.com do not support language: {Config.ToLang}");
+                Logger.Error($"translate {GetUrlTranslate()} do not support language: {Config.ToLang}");
                 return false;
             }
 
             return true;
         }
 
-        protected override int GetMaxSymbolsText()
-        {
-            return 999;
-        }
+        protected override bool IsNeedRecreateDriver() => true;
+        protected override int GetMaxSymbolsText() => 1999;
 
         protected override string GetUrlTranslate(string text="")
         {
-            return $"https://www.bing.com/translator";
+            return $"https://translate.google.com/?sl={Config.FromLang.ToLower()}&tl={Config.ToLang.ToLower()}&text={HttpUtility.HtmlEncode(text)}&op=translate";
         }
 
-        protected override int GetId() => 5;
-
-
-        protected override bool IsNeedRecreateDriver() => true;
+        protected override int GetId() => 6;
     }
 }

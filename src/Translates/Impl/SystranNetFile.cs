@@ -126,7 +126,7 @@ namespace TranslateViaWeb.Translates.Impl
 
         protected override int GetMaxSymbolsText() => 1999;
 
-        protected override string GetUrlTranslate() => "https://translate.systran.net/translationTools/text";
+        protected override string GetUrlTranslate(string text = "") => "https://translate.systran.net/translationTools/text";
 
         protected override int GetId() => 4;
     }

@@ -27,7 +27,7 @@ namespace TranslateViaWeb.Elements
             Logger.Info($"try find xpath: {Xpath}, {nameof(ButtonWaiteElement)}");
 
 
-            if (buttons == null)
+            if (buttons == null || buttons.Count == 0)
             {
                 buttons = Driver.FindElements(By.XPath(Xpath));
                 if (buttons == null)

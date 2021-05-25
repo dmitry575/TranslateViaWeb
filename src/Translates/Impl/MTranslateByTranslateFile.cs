@@ -68,7 +68,7 @@ namespace TranslateViaWeb.Translates.Impl
             return 4999;
         }
 
-        protected override string GetUrlTranslate()
+        protected override string GetUrlTranslate(string text = "")
         {
             return _webSites[_random.Next(0, _webSites.Count - 1)];
         }

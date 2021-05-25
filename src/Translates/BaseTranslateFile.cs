@@ -38,6 +38,8 @@ namespace TranslateViaWeb.Translates
         /// </summary>
         private readonly string _filename;
 
+        private bool _isOpenUrl = false;
+
         /// <summary>
         /// Configuration
         /// </summary>
@@ -90,8 +92,6 @@ namespace TranslateViaWeb.Translates
 
             Logger.Info($"starting translate file: {_filename}");
 
-            // create browser
-            CreateDriver();
 
             try
             {
@@ -106,12 +106,15 @@ namespace TranslateViaWeb.Translates
                 }
                 var readyText = new StringBuilder(content.Length);
 
+                // create browser
+                CreateDriver();
+
                 int countTexts = texts.Count;
                 int i = 0;
                 foreach (var text in texts)
                 {
                     string ready;
-
+                    OpenUrl(text);
                     try
                     {
                         bool isTranslate;
@@ -127,11 +130,14 @@ namespace TranslateViaWeb.Translates
                         break;
                     }
 
-                    if (!string.IsNullOrEmpty(ready))
+                    if (string.IsNullOrEmpty(ready) || ready == text)
                     {
-                        readyText.Append(ready);
-                        Logger.Info($"append to cache: {ready.Length} bytes");
+                        Logger.Warn("Translate is empty or same");
+                        continue;
                     }
+
+                    readyText.Append(ready);
+                    Logger.Info($"append to cache: {ready.Length} bytes");
 
                     if (countTexts > 1 && i < countTexts)
                     {
@@ -269,7 +275,7 @@ namespace TranslateViaWeb.Translates
         /// <summary>
         /// Get url start tranlate
         /// </summary>
-        protected abstract string GetUrlTranslate();
+        protected abstract string GetUrlTranslate(string text = "");
 
         /// <summary>
         /// Get Id of translate
@@ -286,7 +292,19 @@ namespace TranslateViaWeb.Translates
             Driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(_maxSecondsWaiting));
 
             Driver.Manage().Window.Maximize();
-            string url = GetUrlTranslate();
+
+            _isOpenUrl = false;
+        }
+
+        protected virtual void OpenUrl(string text)
+        {
+            string url = GetUrlTranslate(text);
+
+            if (_isOpenUrl)
+            {
+                Logger.Info($"url is already opened: {url}");
+                return;
+            }
 
             Logger.Info($"open url: {url}");
             try
@@ -297,7 +315,6 @@ namespace TranslateViaWeb.Translates
             {
                 Logger.Error($"Open url failed: {e}");
             }
-
         }
 
         /// <summary>

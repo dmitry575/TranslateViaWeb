@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
@@ -31,7 +32,7 @@ namespace TranslateViaWeb.Elements
                     return;
                 }
                 element.Click();
-
+                Thread.Sleep(1000);
                 ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].value = arguments[1]", element, _value);
 
             }
