@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using TranslateViaWeb.Common;
@@ -12,7 +11,7 @@ namespace TranslateViaWeb.Elements
     {
         private int _tryClick = 0;
         private const int MaxClick = 3;
-        public ButtonWaiteElement(RemoteWebDriver driver, string xpath) : base(driver, xpath)
+        public ButtonWaiteElement(IWebDriver driver, string xpath) : base(driver, xpath)
         {
         }
 

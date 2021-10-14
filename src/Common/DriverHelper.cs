@@ -1,6 +1,5 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Remote;
 
 namespace TranslateViaWeb.Common
 {
@@ -11,7 +10,7 @@ namespace TranslateViaWeb.Common
         /// </summary>
         /// <param name="driver">Driver selenium</param>
         /// <param name="element">Element to witch need scrolling</param>
-        public static void ScrollTo(this RemoteWebDriver driver, IWebElement element)
+        public static void ScrollTo(this IWebDriver driver, IWebElement element)
         {
             var actions = new Actions(driver);
             actions.MoveByOffset(element.Location.X, element.Location.Y + 30);
@@ -23,7 +22,7 @@ namespace TranslateViaWeb.Common
         /// </summary>
         /// <param name="driver">Driver selenium</param>
         /// <param name="element">Element to witch need scrolling</param>
-        public static void ScrollToCenter(this RemoteWebDriver driver, IWebElement element)
+        public static void ScrollToCenter(this IWebDriver driver, IWebElement element)
         {
             string scrollElementIntoMiddle = "var viewPortHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);"
                                              + "var elementTop = arguments[0].getBoundingClientRect().top;"

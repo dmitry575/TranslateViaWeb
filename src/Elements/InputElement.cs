@@ -10,7 +10,7 @@ namespace TranslateViaWeb.Elements
     {
         private readonly string _value;
 
-        public InputElement(RemoteWebDriver driver, string xpath, string value) : base(driver, xpath)
+        public InputElement(WebDriver driver, string xpath, string value) : base(driver, xpath)
         {
             _value = value;
         }

@@ -121,15 +121,19 @@ namespace TranslateViaWeb.Translates
                         (ready, isTranslate) = Translating(text);
                         if (!isTranslate)
                         {
+                            Logger.Warn($"file not translate: {_filename}");
                             return false;
                         }
+
+                        Logger.Warn($"path of file translated: {_filename}, {i} of {text.Length}");
+
                     }
                     catch (Exception e)
                     {
                         Logger.Warn($"Translate {i} block failed: {e}");
                         break;
                     }
-
+                    
                     if (string.IsNullOrEmpty(ready) || ready == text)
                     {
                         Logger.Warn("Translate is empty or same");

@@ -54,7 +54,7 @@ namespace TranslateViaWeb.Elements
                 Logger.Error($"not found element in time: {Xpath}, {e.Message}");
             }
 
-            blockDownload ??= Driver.FindElementByCssSelector(Xpath);
+            blockDownload ??= Driver.FindElement(By.CssSelector(Xpath));
 
             if (blockDownload == null)
             {

@@ -52,8 +52,10 @@ namespace TranslateViaWeb.Translates
             {
                 _logger.Info($"start translate {_files.Count} files");
                 
-                var translate2 = new TranslatorEuFile(_files[0], _config);
-                translate2.Translate();
+                //var translate2 = new DeeplTranslateFile(_files[20], _config);
+                //var t= translate2.Translate();
+                //if (t)
+                //    return;
                 
                 Task[] tasks = new Task[_translateFiles.Length];
                 Dictionary<int, int> statistics = InitStatistics();
@@ -100,24 +102,6 @@ namespace TranslateViaWeb.Translates
                 Task.WaitAll(tasks, _cancellationToken);
 
                 PrintStatistics(statistics);
-
-                //var tasks = new List<Task>
-                //{
-                //    Task.Run(() =>
-                //        Parallel.For(0, d,
-                //            new ParallelOptions
-                //            {
-                //                CancellationToken = _cancellationToken, MaxDegreeOfParallelism = MaxTasks
-                //            }, (i) => TranslateDeeplFile(_files[i])), _cancellationToken),
-
-                //    Task.Run(() =>
-                //        Parallel.For(d, _files.Count-1,
-                //            new ParallelOptions
-                //            {
-                //                CancellationToken = _cancellationToken, MaxDegreeOfParallelism = MaxTasks
-                //            }, (i) => TranslateMtranslateByFile(_files[i])), _cancellationToken)
-                //};
-
             }
             catch (Exception e)
             {

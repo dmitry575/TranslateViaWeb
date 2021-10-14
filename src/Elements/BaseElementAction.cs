@@ -1,18 +1,17 @@
 ﻿using System;
 using log4net;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Remote;
 
 namespace TranslateViaWeb.Elements
 {
     public abstract class BaseElementAction : IElementAction
     {
-        protected readonly RemoteWebDriver Driver;
+        protected readonly IWebDriver Driver;
         protected readonly string Xpath;
         protected readonly ILog Logger = LogManager.GetLogger(typeof(BaseElementAction));
 
 
-        protected BaseElementAction(RemoteWebDriver driver, string xpath)
+        protected BaseElementAction(IWebDriver driver, string xpath)
         {
             Driver = driver;
             Xpath = xpath;
