@@ -30,7 +30,7 @@ namespace TranslateViaWeb.Translates
         {
             typeof(DeeplTranslateFile),
             typeof(MTranslateByTranslateFile),
-            typeof(TranslateRuFile),
+            //typeof(TranslateRuFile),
             typeof(BingFile),
             typeof(TranslatorEuFile)
         };
@@ -57,7 +57,7 @@ namespace TranslateViaWeb.Translates
                 //if (t)
                 //    return;
                 
-                Task[] tasks = new Task[_translateFiles.Length];
+                Task[] tasks = new Task[Math.Min(_files.Count, _translateFiles.Length)];
                 Dictionary<int, int> statistics = InitStatistics();
                 int countRun = 0;
                 var idx = -1;
