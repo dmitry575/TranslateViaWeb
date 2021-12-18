@@ -63,7 +63,7 @@ namespace TranslateViaWeb.Translates
                 var idx = -1;
                 foreach (var file in _files)
                 {
-                    if (countRun >= _translateFiles.Length)
+                    if (countRun >= tasks.Length)
                     {
                         idx = Task.WaitAny(tasks, _cancellationToken);
                         tasks[idx] = null;
@@ -88,6 +88,7 @@ namespace TranslateViaWeb.Translates
                             try
                             {
                                 translate.Translate();
+                                _logger.Info($"translate system: {translate.GetType().Name} finished");
                             }
                             finally { translate.Dispose(); }
 
