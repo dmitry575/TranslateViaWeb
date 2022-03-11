@@ -12,8 +12,8 @@ namespace TranslateViaWeb.Translates.Impl
     /// </summary>
     public class DeeplTranslateFile : BaseTranslateFile
     {
-        private readonly Random _random = new Random(1231);
-        private readonly Dictionary<string, string> _mappingLanguages = new Dictionary<string, string>
+        private readonly Random _random = new(1231);
+        private readonly Dictionary<string, string> _mappingLanguages = new()
         {
             {"fr", "fr-FR"},
             {"en", "en-GB"},

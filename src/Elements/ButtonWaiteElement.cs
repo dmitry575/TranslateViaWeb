@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using TranslateViaWeb.Common;
 
@@ -15,7 +14,7 @@ namespace TranslateViaWeb.Elements
         {
         }
 
-        public override void Action()
+        public override void Action(int number)
         {
             var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(30))
             {
@@ -57,12 +56,6 @@ namespace TranslateViaWeb.Elements
 
                     button.Click();
                 }
-                //else
-                //{
-                //    _tryClick++;
-                //    Logger.Info($"try to click to {Xpath}, {_tryClick}");
-                //    Action();
-                //}
             }
         }
 

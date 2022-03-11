@@ -32,7 +32,8 @@ namespace TranslateViaWeb.Translates
             typeof(MTranslateByTranslateFile),
             //typeof(TranslateRuFile),
             typeof(BingFile),
-            typeof(TranslatorEuFile)
+            typeof(TranslatorEuFile),
+            typeof(ReversoFile)
         };
         private readonly CancellationToken _cancellationToken;
 
@@ -52,10 +53,10 @@ namespace TranslateViaWeb.Translates
             {
                 _logger.Info($"start translate {_files.Count} files");
                 
-                //var translate2 = new DeeplTranslateFile(_files[20], _config);
-                //var t= translate2.Translate();
-                //if (t)
-                //    return;
+                var translate2 = new ReversoFile(_files[0], _config);
+                var t= translate2.Translate();
+                if (t)
+                    return;
                 
                 Task[] tasks = new Task[Math.Min(_files.Count, _translateFiles.Length)];
                 Dictionary<int, int> statistics = InitStatistics();

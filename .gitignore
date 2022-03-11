@@ -4,3 +4,4 @@ src/bin/Debug/netcoreapp3.1/geckodriver.exe
 src/bin/
 src/obj/
 src/publish/
+src/.idea/
