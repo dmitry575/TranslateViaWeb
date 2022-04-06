@@ -59,12 +59,13 @@ public class ReversoFile: BaseTranslateFile
                 
             Thread.Sleep(_random.Next(2, 3) * 1000);
 
-            new ButtonWaiteElement(Driver, "//div[contains(@class,'resultText')]//div[@class=\"dropdown-menu open\"]//li[contains(text(), '" + _mappingLanguagesTo[Config.ToLang.ToLower()] + "')]").Action();
+            //new ButtonWaiteElement(Driver, "//div[contains(@class,'resultText')]//div[@class=\"dropdown-menu open\"]//li[contains(text(), '" + _mappingLanguagesTo[Config.ToLang.ToLower()] + "')]").Action();
         }
         catch (Exception e)
         {
             Logger.Warn($"error on click button select to language: {e}");
         }
+        return (null, false);
     }
 
     protected override bool LanguagesMapping()
@@ -95,5 +96,5 @@ public class ReversoFile: BaseTranslateFile
         return "https://www.reverso.net/text-translation#sl=eng";
     }
 
-    protected override int GetId()=>8
+    protected override int GetId()=>8;
 }

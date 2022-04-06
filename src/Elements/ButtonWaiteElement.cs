@@ -14,7 +14,7 @@ namespace TranslateViaWeb.Elements
         {
         }
 
-        public override void Action(int number)
+        public override void Action(int number = 0)
         {
             var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(30))
             {

@@ -13,7 +13,7 @@ namespace TranslateViaWeb.Elements
             _fileName = fileName;
         }
 
-        public override void Action()
+        public override void Action(int number)
         {
 
             var select = Driver.FindElement(By.CssSelector("input[type=file]"));

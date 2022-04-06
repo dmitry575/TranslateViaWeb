@@ -37,9 +37,23 @@ namespace TranslateViaWeb.Elements
         }
 
         /// <summary>
-        /// Download link
+        /// Get full path of downloaded file
         /// </summary>
-        public override void Action()
+        /// <param name="linkElement">Url of downloaded file</param>
+        private string GetFileName(IWebElement linkElement)
+        {
+            string href = linkElement.GetAttribute("href");
+            if (string.IsNullOrEmpty(href))
+            {
+                Logger.Warn($"download link has not 'href' attribute");
+                return string.Empty;
+            }
+
+            var fInfo = new FileInfo(href);
+            return Path.Combine(_downloadPath, fInfo.Name);
+        }
+
+        public override void Action(int number)
         {
             //waiting while translating
             var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(_maxSecondsWaiting));
@@ -83,23 +97,6 @@ namespace TranslateViaWeb.Elements
             // check file downloaded, and rename
             FileDownload = GetFileName(linkElement);
             Logger.Info($"Downloaded file {Xpath}, to {FileDownload}");
-        }
-
-        /// <summary>
-        /// Get full path of downloaded file
-        /// </summary>
-        /// <param name="linkElement">Url of downloaded file</param>
-        private string GetFileName(IWebElement linkElement)
-        {
-            string href = linkElement.GetAttribute("href");
-            if (string.IsNullOrEmpty(href))
-            {
-                Logger.Warn($"download link has not 'href' attribute");
-                return string.Empty;
-            }
-
-            var fInfo = new FileInfo(href);
-            return Path.Combine(_downloadPath, fInfo.Name);
         }
     }
 }

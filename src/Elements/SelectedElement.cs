@@ -13,7 +13,7 @@ namespace TranslateViaWeb.Elements
         {
             _value = value;
         }
-        public override void Action()
+        public override void Action(int number)
         {
             var select = Driver.FindElement(By.XPath(Xpath));
 

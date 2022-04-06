@@ -9,7 +9,12 @@
         /// Action under the element 
         /// </summary>
         /// <param name="number">Number element in list</param>
-        void Action(int number = 0);
+        void Action(int number);
+
+        /// <summary>
+        /// Action under the element 
+        /// </summary>
+        void Action();
 
         string GetAttribute(string name);
     }

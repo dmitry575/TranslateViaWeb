@@ -16,7 +16,11 @@ namespace TranslateViaWeb.Elements
             Driver = driver;
             Xpath = xpath;
         }
-        public abstract void Action(int number = 0);
+        public abstract void Action(int number);
+        public virtual void Action()
+        {
+            Action(0);
+        }
 
         public virtual string GetAttribute(string name)
         {
