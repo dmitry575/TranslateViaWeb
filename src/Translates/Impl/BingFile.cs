@@ -9,42 +9,44 @@ namespace TranslateViaWeb.Translates.Impl
     class BingFile : BaseTranslateFile
     {
         private readonly Random _random = new Random(1231);
+
         private readonly Dictionary<string, string> _mappingLanguagesTo = new Dictionary<string, string>
         {
-            {"fr", "fr"},
-            {"en", "en"},
-            {"es", "es"},
-            {"pt", "pt"},
-            {"it", "it"},
-            {"du", "nl"},
-            {"nl", "nl"},
-            {"po", "pl"},
-            {"ru", "ru"},
-            {"de","de"},
-            {"zh", "zh"},
-            {"ja", "ja"}
+            { "fr", "fr" },
+            { "en", "en" },
+            { "es", "es" },
+            { "pt", "pt" },
+            { "it", "it" },
+            { "du", "nl" },
+            { "nl", "nl" },
+            { "po", "pl" },
+            { "ru", "ru" },
+            { "de", "de" },
+            { "zh", "zh" },
+            { "ja", "ja" }
         };
 
         private readonly Dictionary<string, string> _mappingLanguagesFrom = new Dictionary<string, string>
         {
-            {"fr", "fr"},
-            {"en", "en"},
-            {"es", "es"},
-            {"pt", "pt"},
-            {"it", "it"},
-            {"du", "nl"},
-            {"nl", "nl"},
-            {"po", "pl"},
-            {"ru", "ru"},
-            {"de","de"},
-            {"zh", "zh"},
-            {"ja", "ja"}
+            { "fr", "fr" },
+            { "en", "en" },
+            { "es", "es" },
+            { "pt", "pt" },
+            { "it", "it" },
+            { "du", "nl" },
+            { "nl", "nl" },
+            { "po", "pl" },
+            { "ru", "ru" },
+            { "de", "de" },
+            { "zh", "zh" },
+            { "ja", "ja" }
         };
+
         public BingFile(string filename, Configuration config) : base(filename, config)
         {
         }
 
-        protected override (string, bool) Translating(string text)
+        public override (string, bool) Translating(string text)
         {
             // select language
 
@@ -67,7 +69,6 @@ namespace TranslateViaWeb.Translates.Impl
             {
                 Thread.Sleep(_random.Next(2, 3) * 1000);
                 new ButtonWaiteElement(Driver, "//*[@id=\"tta_tgtsl\"]//option[@value='" + Config.ToLang.ToLower() + "']").Action();
-
             }
             catch (Exception e)
             {
@@ -101,6 +102,7 @@ namespace TranslateViaWeb.Translates.Impl
                 Logger.Error($"translate bing.com do not support language: {Config.FromLang}");
                 return false;
             }
+
             if (!_mappingLanguagesTo.ContainsKey(Config.ToLang.ToLower()))
             {
                 Logger.Error($"translate bing.com do not support language: {Config.ToLang}");
@@ -115,7 +117,7 @@ namespace TranslateViaWeb.Translates.Impl
             return 999;
         }
 
-        protected override string GetUrlTranslate(string text="")
+        protected override string GetUrlTranslate(string text = "")
         {
             return $"https://www.bing.com/translator";
         }

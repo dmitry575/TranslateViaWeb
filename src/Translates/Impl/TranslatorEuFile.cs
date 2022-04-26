@@ -46,7 +46,8 @@ namespace TranslateViaWeb.Translates.Impl
         public TranslatorEuFile(string filename, Configuration config) : base(filename, config)
         {
         }
-        protected override (string, bool) Translating(string text)
+
+        public override (string, bool) Translating(string text)
         {
             // select language
 

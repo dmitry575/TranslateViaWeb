@@ -49,7 +49,7 @@ namespace TranslateViaWeb.Translates.Impl
         {
         }
 
-        protected override (string, bool) Translating(string text)
+        public override (string, bool) Translating(string text)
         {
             // select language
 

@@ -1,7 +1,11 @@
 *.user
 src/.vs/
-src/bin/Debug/netcoreapp3.1/geckodriver.exe
 src/bin/
 src/obj/
 src/publish/
 src/.idea/
+tests/.vs/
+tests/TranslateViaWeb.Tests/bin/
+tests/TranslateViaWeb.Tests/obj/
+tests/TranslateViaWeb.Tests/publish/
+tests/.idea/

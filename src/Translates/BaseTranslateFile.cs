@@ -117,8 +117,7 @@ namespace TranslateViaWeb.Translates
                     OpenUrl(text);
                     try
                     {
-                        bool isTranslate;
-                        (ready, isTranslate) = Translating(text);
+                        (ready, var isTranslate) = Translating(text);
                         if (!isTranslate)
                         {
                             Logger.Warn($"file not translate: {_filename}");
@@ -178,7 +177,7 @@ namespace TranslateViaWeb.Translates
             }
         }
 
-        protected abstract (string, bool) Translating(string text);
+        public abstract (string, bool) Translating(string text);
 
         protected abstract bool LanguagesMapping();
         protected abstract bool IsNeedRecreateDriver();
@@ -289,7 +288,7 @@ namespace TranslateViaWeb.Translates
         /// <summary>
         /// Creating webrowser
         /// </summary>
-        protected virtual void CreateDriver()
+        public virtual void CreateDriver()
         {
             var options = GetOptions(Config.DirOutput);
             // options.Profile = profile;
@@ -300,7 +299,7 @@ namespace TranslateViaWeb.Translates
             _isOpenUrl = false;
         }
 
-        protected virtual void OpenUrl(string text)
+        public virtual void OpenUrl(string text)
         {
             string url = GetUrlTranslate(text);
 

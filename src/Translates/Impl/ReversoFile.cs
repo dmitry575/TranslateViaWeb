@@ -6,32 +6,33 @@ using TranslateViaWeb.Elements;
 
 namespace TranslateViaWeb.Translates.Impl;
 
-public class ReversoFile: BaseTranslateFile
+public class ReversoFile : BaseTranslateFile
 {
     private readonly Random _random = new(3412);
 
     private readonly Dictionary<string, string> _mappingLanguages = new()
     {
-        {"fr", "French"},
-        {"en", "English"},
-        {"sp", "Spanish"},
-        {"es", "Spanish"},
-        {"pt", "Portuguese"},
-        {"it", "Italian"},
-        {"du", "Dutch"},
-        {"po", "Polish"},
-        {"ru", "Russian"},
-        {"de","German"},
-        {"zh", "Chinese"},
-        {"cn", "Chinese"},
-        {"ja", "Japanese"},
-        {"ar","Arabic"}
+        { "fr", "French" },
+        { "en", "English" },
+        { "sp", "Spanish" },
+        { "es", "Spanish" },
+        { "pt", "Portuguese" },
+        { "it", "Italian" },
+        { "du", "Dutch" },
+        { "po", "Polish" },
+        { "ru", "Russian" },
+        { "de", "German" },
+        { "zh", "Chinese" },
+        { "cn", "Chinese" },
+        { "ja", "Japanese" },
+        { "ar", "Arabic" }
     };
+
     public ReversoFile(string filename, Configuration config) : base(filename, config)
     {
     }
 
-    protected override (string, bool) Translating(string text)
+    public override (string, bool) Translating(string text)
     {
         // select language
 
@@ -49,14 +50,14 @@ public class ReversoFile: BaseTranslateFile
         {
             Logger.Warn($"error on click button select to language: {e}");
         }
-        
+
         new InputElement(Driver, "//textarea[@id='sourceText']", text).Action();
 
         try
         {
             Logger.Info($"set lang to: {Config.ToLang}");
             new ButtonWaiteElement(Driver, "//button[@data-id=\"rLang\"]").Action();
-                
+
             Thread.Sleep(_random.Next(2, 3) * 1000);
 
             //new ButtonWaiteElement(Driver, "//div[contains(@class,'resultText')]//div[@class=\"dropdown-menu open\"]//li[contains(text(), '" + _mappingLanguagesTo[Config.ToLang.ToLower()] + "')]").Action();
@@ -65,6 +66,7 @@ public class ReversoFile: BaseTranslateFile
         {
             Logger.Warn($"error on click button select to language: {e}");
         }
+
         return (null, false);
     }
 
@@ -73,8 +75,9 @@ public class ReversoFile: BaseTranslateFile
         if (!_mappingLanguages.ContainsKey(Config.FromLang.ToLower()))
         {
             Logger.Error($"translate Reverso do not support language: {Config.FromLang}");
-            return  false;
+            return false;
         }
+
         if (!_mappingLanguages.ContainsKey(Config.ToLang.ToLower()))
         {
             Logger.Error($"translate Reverso do not support language: {Config.ToLang}");
@@ -96,5 +99,5 @@ public class ReversoFile: BaseTranslateFile
         return "https://www.reverso.net/text-translation#sl=eng";
     }
 
-    protected override int GetId()=>8;
+    protected override int GetId() => 8;
 }
