@@ -38,14 +38,14 @@ namespace TranslateViaWeb.Translates.Impl
             // select language
 
             Logger.Info($"set lang from: {Config.FromLang}");
-            new ButtonWaiteElement(Driver, "//*[@id=\"dl_translator\"]//div[@dl-test='translator-source']//button[@dl-test='translator-source-lang-btn']/div").Action();
-            //new ButtonWaiteElement(_driver, "//*[@id=\"dl_translator\"]//div[@dl-test='translator-source']//button[@dl-test='translator-lang-option-" + _config.FromLang.ToLower() + "']").Action();
+            new ButtonWaiteElement(Driver, "//button[@dl-test='translator-source-lang-btn']").Action();
             try
             {
                 Thread.Sleep(_random.Next(2, 3) * 1000);
-                var buttonToLang = new ButtonWaiteElement(Driver,
-                    "//*[@id=\"dl_translator\"]//div[@dl-test='translator-source']//button[@dl-test='translator-lang-option-" + Config.FromLang.ToLower() + "']");
-                buttonToLang.JavascriptExe("arguments[0].click();");
+                // var buttonToLang = new ButtonWaiteElement(Driver,
+                //     "//div[@dl-test='translator-source-lang-list']//button[@dl-test='translator-lang-option-" + Config.FromLang.ToLower() + "']");
+                // buttonToLang.JavascriptExe("arguments[0].click();");
+                new ButtonWaiteElement(Driver, "//div[@dl-test='translator-source-lang-list']//button[@dl-test='translator-lang-option-" + Config.FromLang.ToLower() + "']").Action();
             }
             catch (Exception e)
             {
@@ -55,7 +55,7 @@ namespace TranslateViaWeb.Translates.Impl
             new InputElement(Driver, "//div[@dl-test='translator-source']//textarea[@dl-test='translator-source-input']", text).Action();
 
             Logger.Info($"set lang to: {Config.ToLang}");
-            new ButtonWaiteElement(Driver, "//*[@id=\"dl_translator\"]//button[@dl-test='translator-target-lang-btn']").Action();
+            new ButtonWaiteElement(Driver, "//div[@dl-test='translator-target']//button[@dl-test='translator-target-lang-btn']").Action();
            
             try
             {
@@ -74,7 +74,7 @@ namespace TranslateViaWeb.Translates.Impl
             Thread.Sleep(_random.Next(20, 25) * 1000);
 
             var resultElement = new InputElement(Driver, "//div[@dl-test='translator-target']//textarea[@dl-test='translator-target-input']", string.Empty);
-            string result = resultElement.GetAttribute("value");
+            var result = resultElement.GetAttribute("value");
 
             if (string.IsNullOrEmpty(result))
             {
