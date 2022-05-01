@@ -37,37 +37,46 @@ public class ReversoFile : BaseTranslateFile
         // select language
 
         Logger.Info($"set lang from: {Config.FromLang}");
-        new ButtonWaiteElement(Driver, "//*[@class=\"language-switch\"]//div[@dl-test='translator-source']//button[@dl-test='translator-source-lang-btn']/div").Action(0);
-        //new ButtonWaiteElement(_driver, "//*[@id=\"dl_translator\"]//div[@dl-test='translator-source']//button[@dl-test='translator-lang-option-" + _config.FromLang.ToLower() + "']").Action();
+        new ButtonWaiteElement(Driver, "//*[@class=\"selected-language\"]").Action();
         try
         {
             Thread.Sleep(_random.Next(2, 3) * 1000);
-            var buttonToLang = new ButtonWaiteElement(Driver,
-                "//*[@id=\"dl_translator\"]//div[@dl-test='translator-source']//button[@dl-test='translator-lang-option-" + Config.FromLang.ToLower() + "']");
-            buttonToLang.JavascriptExe("arguments[0].click();");
+            new ButtonWaiteElement(Driver, "//*[@class=\"language-select-options\"]//div[contains(text(), '" + _mappingLanguagesFrom[Config.ToLang.ToLower()] + "')]").Action();
         }
         catch (Exception e)
         {
             Logger.Warn($"error on click button select to language: {e}");
         }
 
-        new InputElement(Driver, "//textarea[@id='sourceText']", text).Action();
+        new InputElement(Driver, "//div[@class=\"textarea__container\"]//textarea", text).Action();
 
         try
         {
             Logger.Info($"set lang to: {Config.ToLang}");
-            new ButtonWaiteElement(Driver, "//button[@data-id=\"rLang\"]").Action();
+            new ButtonWaiteElement(Driver, "//button[@data-id=\"selected-language\"]").Action(1);
 
             Thread.Sleep(_random.Next(2, 3) * 1000);
 
-            //new ButtonWaiteElement(Driver, "//div[contains(@class,'resultText')]//div[@class=\"dropdown-menu open\"]//li[contains(text(), '" + _mappingLanguagesTo[Config.ToLang.ToLower()] + "')]").Action();
+            new ButtonWaiteElement(Driver, "//*[@class=\"language-select-options\"]//div[contains(text(), '" + _mappingLanguagesTo[Config.ToLang.ToLower()] + "')]").Action();
         }
         catch (Exception e)
         {
             Logger.Warn($"error on click button select to language: {e}");
         }
 
-        return (null, false);
+        // waiting translate
+        Thread.Sleep(_random.Next(30, 35) * 1000);
+
+        var resultElement = new InputElement(Driver, "//div[@class='sentence-wrapper sentence-wrapper_target ng-star-inserted']//span", string.Empty);
+        string result = resultElement.GetInnerText();
+
+        if (string.IsNullOrEmpty(result) || result.Length <= 4 || result == text)
+        {
+            Logger.Warn("not found result of translating");
+            return (string.Empty, false);
+        }
+
+        return (result, true);
     }
 
     protected override bool LanguagesMapping()

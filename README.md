@@ -8,6 +8,7 @@ For transalting using different web services:
 * https://translate.systran.net
 * https://www.translate.ru
 * https://www.translator.eu
+* https://www.reverso.net
 
 
 TranslateViaWeb is console programm with parameters:
