@@ -92,7 +92,6 @@ namespace TranslateViaWeb.Translates
 
             Logger.Info($"starting translate file: {_filename}");
 
-
             try
             {
                 // text maybe a big so need to split

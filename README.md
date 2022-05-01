@@ -1,8 +1,16 @@
 # TranslateViaWeb
 It is example how to use Selenium for translate list of files.
-For transalting use the web service different websites, like: deepl.com, translate.ru
+For transalting using different web services:
+* https://www.bing.com
+* https://www.deepl.com
+* https://www.m-translate.by
+* https://www.m-translate.ru
+* https://translate.systran.net
+* https://www.translate.ru
+* https://www.translator.eu
 
-TranslateViaWeb is console programm wich has parameters:
+
+TranslateViaWeb is console programm with parameters:
 
 /from - from language translate, for example: en
 
@@ -15,3 +23,7 @@ TranslateViaWeb is console programm wich has parameters:
 /timeout - how many seconds wait loading page or another elemnts
 
 The programm using 1 thread for translate.
+
+#Example
+
+`/from en /to ru /dir ./Data /output ./out`

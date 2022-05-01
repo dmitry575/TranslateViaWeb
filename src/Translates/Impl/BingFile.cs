@@ -10,7 +10,7 @@ namespace TranslateViaWeb.Translates.Impl
     {
         private readonly Random _random = new Random(1231);
 
-        private readonly Dictionary<string, string> _mappingLanguagesTo = new Dictionary<string, string>
+        private readonly Dictionary<string, string> _mappingLanguagesTo = new()
         {
             { "fr", "fr" },
             { "en", "en" },
@@ -26,7 +26,7 @@ namespace TranslateViaWeb.Translates.Impl
             { "ja", "ja" }
         };
 
-        private readonly Dictionary<string, string> _mappingLanguagesFrom = new Dictionary<string, string>
+        private readonly Dictionary<string, string> _mappingLanguagesFrom = new()
         {
             { "fr", "fr" },
             { "en", "en" },

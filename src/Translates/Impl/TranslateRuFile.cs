@@ -22,44 +22,35 @@ namespace TranslateViaWeb.Translates.Impl
             {"ja", "Японский"},
         };
 
-        private readonly Dictionary<string, string> _mappingLanguagesFrom = new Dictionary<string, string>
+        private readonly Dictionary<string, string> _mappingLanguagesFrom = new()
         {
-            {"fr", "20"},
-            {"en", "2"},
-            {"sp", "6"},
-            {"es", "6"},
-            {"pt", "12"},
-            {"it", "7"},
-            {"ru", "13"},
-            {"de", "11"},
-            {"zh", "9"},
-            {"ja", "22"},
+            {"fr", "Французский"},
+            {"en", "Английский"},
+            {"sp", "Испанский"},
+            {"es", "Испанский"},
+            {"it", "Итальянский"},
+            {"ru", "Русский"},
+            {"de", "Немецкий"},
+            {"zh", "Китайский"},
+            {"ja", "Японский"},
         };
 
-        private readonly int _categoryId = 3;
         public TranslateRuFile(string filename, Configuration config) : base(filename, config)
         {
         }
 
         public override (string, bool) Translating(string text)
         {
-            
-            Logger.Info($"set category: Computer");
-            new ButtonWaiteElement(Driver, "//*[@data-id=\"selDivTmpl\"]").Action();
-            Thread.Sleep(_random.Next(2, 3) * 1000);
-
-            new ButtonWaiteElement(Driver, "//div[@class=\"dropdown-menu open\"]//li[@data-original-index=\"" + _categoryId + "\"]").Action();
-
             // select language
 
             try
             {
                 Logger.Info($"set lang from: {Config.FromLang}");
-                new ButtonWaiteElement(Driver, "//*[@data-id=\"sLang\"]").Action();
+                new ButtonWaiteElement(Driver, "//button[@data-id=\"fromLangs\"]").Action();
 
                 Thread.Sleep(_random.Next(2, 3) * 1000);
 
-                new ButtonWaiteElement(Driver, "//div[@id='sourceTextBlock']//div[@class=\"dropdown-menu open\"][@role='combobox']//li[@data-original-index=\"" + _mappingLanguagesFrom[Config.FromLang.ToLower()] + "\"]").Action();
+                new ButtonWaiteElement(Driver, "//div[@id='bs-select-1']//li[contains(text(), '\"" + _mappingLanguagesFrom[Config.FromLang.ToLower()] + "\']").Action();
                 
             }
             catch (Exception e)
@@ -67,7 +58,7 @@ namespace TranslateViaWeb.Translates.Impl
                 Logger.Warn($"error on click button select to language: {e}");
             }
 
-            new InputElement(Driver, "//textarea[@id='sourceText']", text).Action();
+            new InputElement(Driver, "//textarea[@id='sText']", text).Action();
 
             try
             {
@@ -76,18 +67,18 @@ namespace TranslateViaWeb.Translates.Impl
                 
                 Thread.Sleep(_random.Next(2, 3) * 1000);
 
-                new ButtonWaiteElement(Driver, "//div[contains(@class,'resultText')]//div[@class=\"dropdown-menu open\"]//li[contains(text(), '" + _mappingLanguagesTo[Config.ToLang.ToLower()] + "')]").Action();
+                new ButtonWaiteElement(Driver, "//div[@id='bs-select-2']//li[contains(text(), '" + _mappingLanguagesTo[Config.ToLang.ToLower()] + "')]").Action();
             }
             catch (Exception e)
             {
                 Logger.Warn($"error on click button select to language: {e}");
             }
 
-            new ButtonWaiteElement(Driver, "//a[@id='bTranslation']").Action();
+            new ButtonWaiteElement(Driver, "//*[@id='btnTranslate']").Action();
 
             Thread.Sleep(_random.Next(20, 25) * 1000);
 
-            var resultElement = new InputElement(Driver, "//textarea[@id='editResult_test']", string.Empty);
+            var resultElement = new InputElement(Driver, "//textarea[@id='tText']", string.Empty);
             string result = resultElement.GetAttribute("value");
 
             if (string.IsNullOrEmpty(result))
@@ -96,7 +87,7 @@ namespace TranslateViaWeb.Translates.Impl
                 return (string.Empty, false);
             }
 
-            return (result, true);
+            return (result.Trim(), true);
         }
 
         protected override bool LanguagesMapping()

@@ -30,7 +30,7 @@ namespace TranslateViaWeb.Translates
         {
             typeof(DeeplTranslateFile),
             typeof(MTranslateByTranslateFile),
-            //typeof(TranslateRuFile),
+            typeof(TranslateRuFile),
             typeof(BingFile),
             typeof(TranslatorEuFile),
             typeof(ReversoFile)

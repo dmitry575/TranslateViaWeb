@@ -8,15 +8,12 @@ namespace TranslateViaWeb.Translates.Impl
 {
     public class MTranslateByTranslateFile : BaseTranslateFile
     {
-        private readonly Random _random = new Random(56789);
+        private readonly Random _random = new(56789);
 
-        private List<string> _webSites = new List<string>
+        private List<string> _webSites = new()
         {
             "https://www.m-translate.by/#",
-            "https://www.m-translate.com.ua/#",
-            //"https://www.m-translate.com/#",
             "https://www.m-translate.ru/#"
-
         };
 
         public MTranslateByTranslateFile(string filename, Configuration config) : base(filename, config)
@@ -25,7 +22,6 @@ namespace TranslateViaWeb.Translates.Impl
 
         public override (string, bool) Translating(string text)
         {
-
             // insert text for translate
             new InputElement(Driver, "//div[@id='trn_from_cnt']//textarea[@id='text']", text).Action();
 
