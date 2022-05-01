@@ -6,7 +6,7 @@ using TranslateViaWeb.Configs;
 
 namespace TranslateViaWeb.Tests;
 
-public class DeeplTranslateFileTests
+public class BingFileTests
 {
     private string[] _args = { "/from", "en", "/to", "ru", "/dir", "./Data", "/output", "./out" };
 
@@ -19,13 +19,13 @@ public class DeeplTranslateFileTests
     public void Translate_Success()
     {
         var config = new Configuration(_args);
-        using (var translater = new DeeplTranslateFile("./Data/deepl.txt", config))
+        using (var translater = new BingFile("./Data/bing.txt", config))
         {
             var res = translater.Translate();
             res.Should().BeTrue();
         }
 
-        var text = File.ReadAllText("./out/deepl.en.ru.txt");
-        text.Should().Be("стол");
+        var text = File.ReadAllText("./out/bing.en.ru.txt");
+        text.Should().Be("занятие");
     }
 }

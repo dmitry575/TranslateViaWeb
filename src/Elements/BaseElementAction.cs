@@ -43,6 +43,19 @@ namespace TranslateViaWeb.Elements
             return string.Empty;
         }
 
+        public virtual void SendKey(string text)
+        {
+            try
+            {
+                var element = Driver.FindElement(By.XPath(Xpath));
+               element.SendKeys(text);
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"failed get attribute {Xpath}. {e}");
+            }
+        }
+
         public virtual void JavascriptExe(string script)
         {
             var element = Driver.FindElement(By.XPath(Xpath));

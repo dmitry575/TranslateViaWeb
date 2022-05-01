@@ -53,7 +53,7 @@ namespace TranslateViaWeb.Translates.Impl
 
             Thread.Sleep(_random.Next(30, 35) * 1000);
 
-            new ButtonWaiteElement(Driver, "//span[@data-language-to-translate-into='{Config.FromLang.ToLower()}']");
+            new ButtonWaiteElement(Driver, "//span[@data-language-to-translate-into='{Config.FromLang.ToLower()}']").Action();
 
             var resultElement = new InputElement(Driver, "//textarea[@id='tta_output_ta']", string.Empty);
             string result = resultElement.GetAttribute("value");

@@ -124,7 +124,7 @@ namespace TranslateViaWeb.Translates
                             return false;
                         }
 
-                        Logger.Warn($"path of file translated: {_filename}, {i} of {text.Length}");
+                        Logger.Info($"path of file translated: {_filename}, {i} of {text.Length}");
 
                     }
                     catch (Exception e)
@@ -191,12 +191,12 @@ namespace TranslateViaWeb.Translates
         {
             try
             {
-                if (Directory.Exists(Config.DirOutput))
+                if (!Directory.Exists(Config.DirOutput))
                 {
                     Directory.CreateDirectory(Config.DirOutput);
                     Logger.Info($"directory created: {Config.DirOutput}");
-
                 }
+                
                 File.WriteAllText(fileName, text);
             }
             catch (Exception e)

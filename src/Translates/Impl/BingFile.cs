@@ -6,7 +6,7 @@ using TranslateViaWeb.Elements;
 
 namespace TranslateViaWeb.Translates.Impl
 {
-    class BingFile : BaseTranslateFile
+    public sealed class BingFile : BaseTranslateFile
     {
         private readonly Random _random = new Random(1231);
 

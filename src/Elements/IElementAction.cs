@@ -17,5 +17,7 @@
         void Action();
 
         string GetAttribute(string name);
+
+        void SendKey(string text);
     }
 }

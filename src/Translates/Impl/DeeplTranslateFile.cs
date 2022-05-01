@@ -13,22 +13,24 @@ namespace TranslateViaWeb.Translates.Impl
     public class DeeplTranslateFile : BaseTranslateFile
     {
         private readonly Random _random = new(1231);
+
         private readonly Dictionary<string, string> _mappingLanguages = new()
         {
-            {"fr", "fr-FR"},
-            {"en", "en-GB"},
-            {"sp", "es-ES"},
-            {"es", "es-ES"},
-            {"pt", "pt-PT"},
-            {"br", "pt-BR"},
-            {"it", "it-IT"},
-            {"du", "nl-NL"},
-            {"po", "pl-PL"},
-            {"ru", "ru-RU"},
-            {"de","de-DE"},
-            {"zh", "zh-ZH"},
-            {"ja", "ja-JA"},
+            { "fr", "fr-FR" },
+            { "en", "en-GB" },
+            { "sp", "es-ES" },
+            { "es", "es-ES" },
+            { "pt", "pt-PT" },
+            { "br", "pt-BR" },
+            { "it", "it-IT" },
+            { "du", "nl-NL" },
+            { "po", "pl-PL" },
+            { "ru", "ru-RU" },
+            { "de", "de-DE" },
+            { "zh", "zh-ZH" },
+            { "ja", "ja-JA" },
         };
+
         public DeeplTranslateFile(string filename, Configuration config) : base(filename, config)
         {
         }
@@ -42,38 +44,35 @@ namespace TranslateViaWeb.Translates.Impl
             try
             {
                 Thread.Sleep(_random.Next(2, 3) * 1000);
-                // var buttonToLang = new ButtonWaiteElement(Driver,
-                //     "//div[@dl-test='translator-source-lang-list']//button[@dl-test='translator-lang-option-" + Config.FromLang.ToLower() + "']");
-                // buttonToLang.JavascriptExe("arguments[0].click();");
                 new ButtonWaiteElement(Driver, "//div[@dl-test='translator-source-lang-list']//button[@dl-test='translator-lang-option-" + Config.FromLang.ToLower() + "']").Action();
             }
             catch (Exception e)
             {
                 Logger.Warn($"error on click button select to language: {e}");
             }
-            
-            new InputElement(Driver, "//div[@dl-test='translator-source']//textarea[@dl-test='translator-source-input']", text).Action();
+
 
             Logger.Info($"set lang to: {Config.ToLang}");
-            new ButtonWaiteElement(Driver, "//div[@dl-test='translator-target']//button[@dl-test='translator-target-lang-btn']").Action();
-           
+            new ButtonWaiteElement(Driver, "//section[@dl-test='translator-target']//button[@dl-test='translator-target-lang-btn']").Action();
+
             try
             {
                 Thread.Sleep(_random.Next(2, 3) * 1000);
-                var buttonToLang = new ButtonWaiteElement(Driver,
-                    "//div[@dl-test='translator-target-lang-list']//button[@dl-test='translator-lang-option-" + _mappingLanguages[Config.ToLang.ToLower()] + "']");
-                buttonToLang.JavascriptExe("arguments[0].click();");
+                new ButtonWaiteElement(Driver, "//div[@dl-test='translator-target-lang-list']//button[@dl-test='translator-lang-option-" + _mappingLanguages[Config.ToLang.ToLower()] + "']").Action();
             }
             catch (Exception e)
             {
                 Logger.Warn($"error on click button select to language: {e}");
             }
 
-            new ButtonWaiteElement(Driver, "//div[@dl-test='translator-source']//textarea[@dl-test='translator-source-input']").Action();
-            
+            // set translating text
+            var textArea = new InputElement(Driver, "//textarea[@dl-test='translator-source-input']", text);
+            textArea.Action();
+            textArea.SendKey("\n");
+
             Thread.Sleep(_random.Next(20, 25) * 1000);
 
-            var resultElement = new InputElement(Driver, "//div[@dl-test='translator-target']//textarea[@dl-test='translator-target-input']", string.Empty);
+            var resultElement = new InputElement(Driver, "//section[@dl-test='translator-target']//textarea[@dl-test='translator-target-input']", string.Empty);
             var result = resultElement.GetAttribute("value");
 
             if (string.IsNullOrEmpty(result))
@@ -82,7 +81,7 @@ namespace TranslateViaWeb.Translates.Impl
                 return (string.Empty, false);
             }
 
-            return (result, true);
+            return (result.Trim(), true);
         }
 
         protected override bool LanguagesMapping()
@@ -90,8 +89,9 @@ namespace TranslateViaWeb.Translates.Impl
             if (!_mappingLanguages.ContainsKey(Config.FromLang.ToLower()))
             {
                 Logger.Error($"translate deepl do not support language: {Config.FromLang}");
-                return  false;
+                return false;
             }
+
             if (!_mappingLanguages.ContainsKey(Config.ToLang.ToLower()))
             {
                 Logger.Error($"translate deepl do not support language: {Config.ToLang}");
@@ -112,7 +112,7 @@ namespace TranslateViaWeb.Translates.Impl
         }
 
         protected override int GetId() => 0;
-        
+
 
         protected override bool IsNeedRecreateDriver() => true;
     }
