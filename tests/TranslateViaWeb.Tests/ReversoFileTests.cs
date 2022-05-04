@@ -14,13 +14,13 @@ public class ReversoFileTests
     public void Translate_Success()
     {
         var config = new Configuration(_args);
-        using (var translater = new ReversoFile("./Data/ReversoFile.txt", config))
+        using (var translate = new ReversoFile("./Data/ReversoFile.txt", config))
         {
-            var res = translater.Translate();
+            var res = translate.Translate();
             res.Should().BeTrue();
         }
 
         var text = File.ReadAllText("./out/ReversoFile.en.ru.txt");
-        text.Should().Be("понять");
+        text.Should().Be("несомненно");
     }
 }

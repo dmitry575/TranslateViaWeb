@@ -10,7 +10,25 @@ public class ReversoFile : BaseTranslateFile
 {
     private readonly Random _random = new(3412);
 
-    private readonly Dictionary<string, string> _mappingLanguages = new()
+    private readonly Dictionary<string, string> _mappingLanguagesFrom = new()
+    {
+        { "fr", "French" },
+        { "en", "English" },
+        { "sp", "Spanish" },
+        { "es", "Spanish" },
+        { "pt", "Portuguese" },
+        { "it", "Italian" },
+        { "du", "Dutch" },
+        { "po", "Polish" },
+        { "ru", "Russian" },
+        { "de", "German" },
+        { "zh", "Chinese" },
+        { "cn", "Chinese" },
+        { "ja", "Japanese" },
+        { "ar", "Arabic" }
+    };
+
+    private readonly Dictionary<string, string> _mappingLanguagesTo = new()
     {
         { "fr", "French" },
         { "en", "English" },
@@ -34,6 +52,10 @@ public class ReversoFile : BaseTranslateFile
 
     public override (string, bool) Translating(string text)
     {
+        var inputText = new InputElement(Driver, "//div[@class=\"textarea__container\"]//textarea", text);
+        inputText.Action();
+        inputText.SendKey("\n");
+
         // select language
 
         Logger.Info($"set lang from: {Config.FromLang}");
@@ -41,23 +63,21 @@ public class ReversoFile : BaseTranslateFile
         try
         {
             Thread.Sleep(_random.Next(2, 3) * 1000);
-            new ButtonWaiteElement(Driver, "//*[@class=\"language-select-options\"]//div[contains(text(), '" + _mappingLanguagesFrom[Config.ToLang.ToLower()] + "')]").Action();
+            new ButtonWaiteElement(Driver, "//*[@class=\"language-select-options\"]//span[contains(text(), '" + _mappingLanguagesFrom[Config.FromLang.ToLower()] + "')]").Action();
         }
         catch (Exception e)
         {
             Logger.Warn($"error on click button select to language: {e}");
         }
 
-        new InputElement(Driver, "//div[@class=\"textarea__container\"]//textarea", text).Action();
-
         try
         {
             Logger.Info($"set lang to: {Config.ToLang}");
-            new ButtonWaiteElement(Driver, "//button[@data-id=\"selected-language\"]").Action(1);
+            new ButtonWaiteElement(Driver, "//*[@class=\"selected-language\"]").Action(1);
 
             Thread.Sleep(_random.Next(2, 3) * 1000);
 
-            new ButtonWaiteElement(Driver, "//*[@class=\"language-select-options\"]//div[contains(text(), '" + _mappingLanguagesTo[Config.ToLang.ToLower()] + "')]").Action();
+            new ButtonWaiteElement(Driver, "//*[@class=\"language-select-options\"]//span[contains(text(), '" + _mappingLanguagesTo[Config.ToLang.ToLower()] + "')]").Action(1);
         }
         catch (Exception e)
         {
@@ -67,7 +87,7 @@ public class ReversoFile : BaseTranslateFile
         // waiting translate
         Thread.Sleep(_random.Next(30, 35) * 1000);
 
-        var resultElement = new InputElement(Driver, "//div[@class='sentence-wrapper sentence-wrapper_target ng-star-inserted']//span", string.Empty);
+        var resultElement = new InputElement(Driver, "//*[contains(@class,'translation-input__result')]//span", string.Empty);
         string result = resultElement.GetInnerText();
 
         if (string.IsNullOrEmpty(result) || result.Length <= 4 || result == text)
@@ -81,13 +101,13 @@ public class ReversoFile : BaseTranslateFile
 
     protected override bool LanguagesMapping()
     {
-        if (!_mappingLanguages.ContainsKey(Config.FromLang.ToLower()))
+        if (!_mappingLanguagesFrom.ContainsKey(Config.FromLang.ToLower()))
         {
             Logger.Error($"translate Reverso do not support language: {Config.FromLang}");
             return false;
         }
 
-        if (!_mappingLanguages.ContainsKey(Config.ToLang.ToLower()))
+        if (!_mappingLanguagesTo.ContainsKey(Config.ToLang.ToLower()))
         {
             Logger.Error($"translate Reverso do not support language: {Config.ToLang}");
             return false;

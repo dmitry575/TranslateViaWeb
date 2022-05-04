@@ -17,7 +17,11 @@
         void Action();
 
         string GetAttribute(string name);
-
+        
+        /// <summary>
+        /// Send imitation of click button
+        /// </summary>
+        /// <param name="text">Text of button</param>
         void SendKey(string text);
     }
 }

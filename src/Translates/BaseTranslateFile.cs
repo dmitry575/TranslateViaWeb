@@ -124,7 +124,6 @@ namespace TranslateViaWeb.Translates
                         }
 
                         Logger.Info($"path of file translated: {_filename}, {i} of {text.Length}");
-
                     }
                     catch (Exception e)
                     {
