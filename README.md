@@ -1,6 +1,7 @@
 # TranslateViaWeb
-It is example how to use Selenium for translate list of files.
-For transalting using different web services:
+It is example how to use Selenium for translate many files.
+For transalting using follow web services:
+
 * https://www.bing.com
 * https://www.deepl.com
 * https://www.m-translate.by
@@ -11,20 +12,27 @@ For transalting using different web services:
 * https://www.reverso.net
 
 
-TranslateViaWeb is console programm with parameters:
+`TranslateViaWeb` is console application using follow parameters:
 
-/from - from language translate, for example: en
+`/from` - from language translate, for example: en
 
-/to - to language translate, for example: en
+`/to` - to language translate, for example: en
 
-/dir - full directories from witch get all files and try to translate
+`/dir` - full directories from witch get all files and try to translate
 
-/output - full directories where will be saving new files
+`/output` - full directories where will be saving new files
 
-/timeout - how many seconds wait loading page or another elemnts
+`/timeout` - how many seconds wait loading page or another elemnts
 
-The programm using 1 thread for translate.
+The application using 1 thread for translate.
 
-# Example
+### Run
 
-`/from en /to ru /dir ./Data /output ./out`
+Tranlating all filed in path `Data` from `English` to `Russian` and result of translate put to the path `out`
+
+```cmd
+TranslateViaWeb.exe /from en /to ru /dir ./Data /output ./out
+```
+
+### Add resource for translating
+
